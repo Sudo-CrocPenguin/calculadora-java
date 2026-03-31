@@ -92,6 +92,7 @@ public class App extends Application {
         }
 
         Scene scene = new Scene(grid, 260, 350);
+        scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
 
         stage.setTitle("Calculadora Pro");
         stage.setScene(scene);

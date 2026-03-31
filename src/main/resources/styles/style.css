@@ -1,0 +1,33 @@
+.root {
+    -fx-background-color: #0a0a0a;
+}
+
+/* Pantalla */
+.text-field {
+    -fx-background-color: #1a001f;
+    -fx-text-fill: #39ff14;
+    -fx-font-size: 20px;
+    -fx-border-color: #8a2be2;
+    -fx-border-width: 2px;
+}
+
+/* Botones */
+.button {
+    -fx-background-color: #2d0036;
+    -fx-text-fill: #39ff14;
+    -fx-font-size: 16px;
+    -fx-border-color: #8a2be2;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+/* Hover efecto */
+.button:hover {
+    -fx-background-color: #8a2be2;
+    -fx-text-fill: black;
+}
+
+/* Botón "=" especial */
+.button:focused {
+    -fx-border-color: #39ff14;
+}
