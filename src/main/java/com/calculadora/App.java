@@ -11,10 +11,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     private CalculadoraController controller = new CalculadoraController();
-
-    private String numero1 = "";
-    private String numero2 = "";
-    private String operacion = "";
+    private String expresion = "";
 
     @Override
     public void start(Stage stage) {
@@ -48,37 +45,36 @@ public class App extends Application {
             btn.setOnAction(e -> {
 
                 if (texto.matches("[0-9.]")) {
-                    // números
-                    if (operacion.isEmpty()) {
-                        numero1 += texto;
-                        pantalla.setText(numero1);
-                    } else {
-                        numero2 += texto;
-                        pantalla.setText(numero2);
-                    }
+                    expresion += texto;
+                    pantalla.setText(expresion);
 
                 } else if (texto.equals("C")) {
-                    numero1 = "";
-                    numero2 = "";
-                    operacion = "";
+                    expresion = "";
                     pantalla.clear();
 
                 } else if (texto.equals("=")) {
-                    String res = controller.calcular(operacion, numero1, numero2);
-                    pantalla.setText(res);
-
-                    numero1 = res;
-                    numero2 = "";
-                    operacion = "";
+                    try {
+                        String res = evaluarExpresion(expresion);
+                        pantalla.setText(res);
+                        expresion = res;
+                    } catch (Exception ex) {
+                        pantalla.setText("Error");
+                        expresion = "";
+                    }
 
                 } else if (texto.equals("√")) {
-                    String res = controller.calcular("√", numero1, "");
-                    pantalla.setText(res);
-                    numero1 = res;
+                    try {
+                        String res = controller.calcular("√", expresion, "");
+                        pantalla.setText(res);
+                        expresion = res;
+                    } catch (Exception ex) {
+                        pantalla.setText("Error");
+                        expresion = "";
+                    }
 
                 } else {
-                    // operación
-                    operacion = texto;
+                    expresion += texto;
+                    pantalla.setText(expresion);
                 }
             });
 
@@ -92,11 +88,109 @@ public class App extends Application {
         }
 
         Scene scene = new Scene(grid, 260, 350);
+
+        // CSS
         scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
 
-        stage.setTitle("Calculadora Pro");
+        // TECLADO
+        scene.setOnKeyPressed(event -> {
+
+            String tecla = event.getText();
+
+            if (tecla.matches("[0-9.]")) {
+                expresion += tecla;
+                pantalla.setText(expresion);
+
+            } else {
+                switch (event.getCode()) {
+
+                    case ADD:
+                    case PLUS:
+                        expresion += "+";
+                        break;
+
+                    case SUBTRACT:
+                    case MINUS:
+                        expresion += "-";
+                        break;
+
+                    case MULTIPLY:
+                        expresion += "*";
+                        break;
+
+                    case DIVIDE:
+                        expresion += "/";
+                        break;
+
+                    case ENTER:
+                        String res = evaluarExpresion(expresion);
+                        pantalla.setText(res);
+                        expresion = res;
+                        return;
+
+                    case BACK_SPACE:
+                        if (!expresion.isEmpty()) {
+                            expresion = expresion.substring(0, expresion.length() - 1);
+                        }
+                        break;
+
+                    case ESCAPE:
+                        expresion = "";
+                        break;
+
+                    default:
+                        return;
+                }
+
+                pantalla.setText(expresion);
+            }
+        });
+
+        stage.setTitle("Calculadora techrunner");
         stage.setScene(scene);
         stage.show();
+
+        // IMPORTANTE para teclado
+        pantalla.requestFocus();
+    }
+
+    // MÉTODO PARA CALCULAR
+    private String evaluarExpresion(String exp) {
+
+        try {
+
+            if (exp.contains("+")) {
+
+                String[] partes = exp.split("\\+");
+                return controller.calcular("+", partes[0], partes[1]);
+
+            } else if (exp.contains("-")) {
+
+                String[] partes = exp.split("-");
+                return controller.calcular("-", partes[0], partes[1]);
+
+            } else if (exp.contains("*")) {
+
+                String[] partes = exp.split("\\*");
+                return controller.calcular("*", partes[0], partes[1]);
+
+            } else if (exp.contains("/")) {
+
+                String[] partes = exp.split("/");
+                return controller.calcular("/", partes[0], partes[1]);
+
+            } else if (exp.contains("^")) {
+
+                String[] partes = exp.split("\\^");
+                return controller.calcular("^", partes[0], partes[1]);
+
+            }
+
+        } catch (Exception e) {
+            return "Error";
+        }
+
+        return "Error";
     }
 
     public static void main(String[] args) {
