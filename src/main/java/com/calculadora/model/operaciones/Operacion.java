@@ -1,5 +1,5 @@
 package com.calculadora.model.operaciones;
 
-public class Operacion {
-
+public interface Operacion {
+    double calcular(double a, double b);
 }
